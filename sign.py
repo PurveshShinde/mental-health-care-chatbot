@@ -71,11 +71,20 @@ if not st.session_state.authenticated:
 # Load environment variables
 
 # Set up Gemini client
-# Set up Gemini client with hardcoded public API key
-client = genai.Client(api_key="AIzaSyAl4rEdDYGSo0DL6Htl2sHmwP3tazBghmc")
+# Set up Gemini client
+# Securely access the API key from Streamlit secrets
+try:
+    api_key = st.secrets["GOOGLE_GENAI_API_KEY"]
+except (FileNotFoundError, KeyError):
+    # Fallback to os.getenv for local dev if secrets.toml is missing (optional but good practice)
+    import os
+    api_key = os.getenv("GOOGLE_GENAI_API_KEY")
 
+if not api_key:
+    st.error("❌ Google GenAI API Key not found. Please add it to .streamlit/secrets.toml or set it in Streamlit Cloud secrets.")
+    st.stop()
 
-# Set up emotion detection pipeline
+client = genai.Client(api_key=api_key)# Set up emotion detection pipeline
 emotion_classifier = pipeline("text-classification", model="bhadresh-savani/distilbert-base-uncased-emotion", top_k=1)
 
 # Main page title

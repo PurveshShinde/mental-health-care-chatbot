@@ -1,0 +1,13 @@
+.venv/
+
+.streamlit/secrets.toml
+
+*.db
+
+__pycache__/
+
+.streamlit/secrets.toml
+
+*.db
+
+__pycache__/
